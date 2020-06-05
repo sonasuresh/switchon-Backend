@@ -58,38 +58,40 @@ async function updateRequestStatus (req, res) {
             message: 'DB Error'
           })
         } else {
-          User.find({ _id: docs.createdById }, { email: 1 }, (err, userdocs) => {
-            if (err) {
-              logger.error('DB Error')
-              res.status(500).send({
-                success: false,
-                message: 'DB Error'
-              })
-            } else {
-              const newNotification = new Notification({
-                requestedId: docs.createdById,
-                assignedId: docs.assignedToId,
-                message: `${userdocs[0].email} has ${status} Your Request`,
-                form: docs
+          if (docs.length > 0) {
+            User.find({ _id: docs.createdById }, { email: 1 }, (err, userdocs) => {
+              if (err) {
+                logger.error('DB Error')
+                res.status(500).send({
+                  success: false,
+                  message: 'DB Error'
+                })
+              } else {
+                const newNotification = new Notification({
+                  requestedId: docs.createdById,
+                  assignedId: docs.assignedToId,
+                  message: `${userdocs[0].email} has ${status} Your Request`,
+                  form: docs
 
-              })
-              newNotification.save((err, docs) => {
-                if (err) {
-                  logger.error('DB Error')
-                  res.status(500).send({
-                    success: false,
-                    message: 'DB Error'
-                  })
-                } else {
-                  logger.info('Notification Sent!!')
-                  res.status(200).send({
-                    success: true,
-                    message: 'Notification Sent!'
-                  })
-                }
-              })
-            }
-          })
+                })
+                newNotification.save((err, docs) => {
+                  if (err) {
+                    logger.error('DB Error')
+                    res.status(500).send({
+                      success: false,
+                      message: 'DB Error'
+                    })
+                  } else {
+                    logger.info('Notification Sent!!')
+                    res.status(200).send({
+                      success: true,
+                      message: 'Notification Sent!'
+                    })
+                  }
+                })
+              }
+            })
+          }
         }
       })
     }
@@ -114,11 +116,11 @@ async function getIndividualsFormRequests (req, res) {
     } else {
       Form.aggregate([
         { $match: { assignedToId: userId, status: status } },
-        { $addFields: { createdById: { $toObjectId: '$createdById' } } },
+        { $addFields: { assignedToId: { $toObjectId: '$assignedToId' } } },
         {
           $lookup: {
             from: 'users',
-            localField: 'createdById',
+            localField: 'assignedToId',
             foreignField: '_id',
             as: 'user'
           }
@@ -133,7 +135,7 @@ async function getIndividualsFormRequests (req, res) {
           })
         }
         if (docs) {
-          logger.info('Fetched Individual Form Reuquests!!')
+          logger.info('Fetched Individual Form Requests!!')
           res.status(200).send({
             success: true,
             message: docs
@@ -173,7 +175,6 @@ async function getRequestedForms (req, res) {
         { $unwind: '$user' }
       ]).exec((err, docs) => {
         if (err) {
-          console.log(err)
           logger.error('DB Error')
           res.status(500).send({
             success: false,
@@ -232,7 +233,6 @@ async function getFormsBasedOnDepartments (req, res) {
 
           ]).exec((err, docs) => {
             if (err) {
-              console.log('here-->' + err)
               logger.error('DB Error')
               res.status(500).send({
                 success: false,

@@ -4,7 +4,6 @@ const bodyparser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const WebSocket = require('ws')
-const { dbdetails } = require('./config/config')
 app.use(cors())
 
 const PORT = process.env.PORT || 4000
@@ -22,11 +21,9 @@ app.use('/department', DepartmentRoute)
 app.use('/form', FormRoute)
 app.use('/notification', NotificationRoute)
 
-// const URL = 'mongodb://127.0.0.1:27017/switchon'
+// const URL = 'mongodb://127.0.0.1:27017/switchon'//local
 
-// const URL = 'mongodb://sonas:sona123%23@cluster0-x4ayx.mongodb.net/switchon?retryWrites=true&w=majority'
 const URL = 'mongodb+srv://sonas:sona123%23@cluster0-x4ayx.mongodb.net/switchon?retryWrites=true&w=majority'
-// const URL = 'mongodb://' + dbdetails.username + ':' + dbdetails.password + '@' + dbdetails.host + ':' + dbdetails.port + '/' + dbdetails.database
 mongoose.connect(URL, { useNewUrlParser: true }, (err) => {
   if (err) {
     console.log('Error while Connecting!')
