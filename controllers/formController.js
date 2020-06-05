@@ -173,6 +173,7 @@ async function getRequestedForms (req, res) {
         { $unwind: '$user' }
       ]).exec((err, docs) => {
         if (err) {
+          console.log(err)
           logger.error('DB Error')
           res.status(500).send({
             success: false,
@@ -217,7 +218,7 @@ async function getFormsBasedOnDepartments (req, res) {
         if (deptdocs.departmentId != null) {
           Form.aggregate([
             { $match: { status: status } },
-            { $addFields: { assignedToId: { $toObjectId: '$assignedToId' } } },
+            { $addFields: { assignedToId: { $tooid: '$assignedToId' } } },
             {
               $lookup: {
                 from: 'users',
@@ -231,6 +232,7 @@ async function getFormsBasedOnDepartments (req, res) {
 
           ]).exec((err, docs) => {
             if (err) {
+              console.log('here-->' + err)
               logger.error('DB Error')
               res.status(500).send({
                 success: false,

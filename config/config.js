@@ -1,9 +1,9 @@
 const dbdetails = {
-  username: 'admin1',
-  password: 'admin123',
-  database: 'heroku_j00txk4g',
-  host: 'ds133281.mlab.com',
-  port: '33281'
+  username: 'sonas',
+  password: 'sona123#',
+  database: 'heroku_cd2s63lj',
+  host: 'ds161134.mlab.com',
+  port: '61134'
 }
 module.exports = {
   dbdetails
