@@ -218,7 +218,7 @@ async function getFormsBasedOnDepartments (req, res) {
         if (deptdocs.departmentId != null) {
           Form.aggregate([
             { $match: { status: status } },
-            { $addFields: { assignedToId: { $tooid: '$assignedToId' } } },
+            { $addFields: { assignedToId: { $toObjectId: '$assignedToId' } } },
             {
               $lookup: {
                 from: 'users',
